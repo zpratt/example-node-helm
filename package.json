@@ -1,0 +1,27 @@
+{
+  "name": "example-node-helm",
+  "version": "1.0.0",
+  "description": "example node app with helm chart",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zpratt/example-node-helm.git"
+  },
+  "keywords": [
+    "node",
+    "helm",
+    "example"
+  ],
+  "author": "zach pratt <zach@attackofzach.com> (http://attackofzach.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zpratt/example-node-helm/issues"
+  },
+  "homepage": "https://github.com/zpratt/example-node-helm#readme",
+  "dependencies": {
+    "@hapi/hapi": "18.4.0"
+  }
+}

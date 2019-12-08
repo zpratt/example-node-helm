@@ -1,0 +1,42 @@
+repositories:
+  - name: stable
+    url: https://kubernetes-charts.storage.googleapis.com/
+  - name: incubator
+    url: https://kubernetes-charts-incubator.storage.googleapis.com/
+releases:
+  - name: namespaces
+    chart: incubator/raw
+    values:
+      - resources:
+          - apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: nginx
+            spec: {}
+          - apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: example-node-helm
+            spec: {}
+  - name: nginx-ingress
+    namespace: nginx
+    chart: stable/nginx-ingress
+    needs:
+      - namespaces
+    set:
+      - name: controller.kind
+        value: DaemonSet
+      - name: controller.service.type
+        value: NodePort
+      - name: controller.service.nodePorts.http
+        value: 30080
+      - name: controller.service.nodePorts.https
+        value: 30443
+  - name: example-node-helm
+    namespace: example-node-helm
+    chart: ./node-app
+    needs:
+      - namespaces
+    values:
+      - "./node-app/values.yaml"
+    wait: true
