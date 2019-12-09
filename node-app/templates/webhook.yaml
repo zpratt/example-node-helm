@@ -1,0 +1,19 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+    kind: ValidatingWebhookConfiguration
+    metadata:
+        name: track-deploys
+    webHooks:
+        - name: track-deploys
+          rules:
+              - apiGroups:
+                    - ""
+                apiVersions:
+                    - v1
+                operations:
+                    - CREATE
+                resources:
+                    - pods
+          failurePolicy: Ignore
+          clientConfig:
+              url: https://example-node-helm-node-app.example-node-helm.svc:8443/deploy
+              caBundle: ""
