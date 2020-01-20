@@ -20,6 +20,7 @@ COPY --from=builder /usr/src/app/package.json .
 COPY --from=builder /usr/src/app/package-lock.json .
 COPY --from=builder /usr/src/app/index.js .
 COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/routes ./routes
 
 USER node
 ENTRYPOINT ["node", "--experimental-modules", "index.js"]
