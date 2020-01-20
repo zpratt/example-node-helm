@@ -1,55 +1,25 @@
-const Hapi = require('@hapi/hapi');
-const kubernetes = require('@kubernetes/client-node');
+const Glue = require('@hapi/glue');
 
-function buildClient() {
-    const config = new kubernetes.KubeConfig();
-    config.loadFromCluster();
+const manifest = {
+    server: {
+        port: process.env.PORT,
+        host: `${process.env.HOST}`
+    },
+    register: {
+        plugins: [
+            {plugin: './routes/root'},
+            {plugin: './routes/health'}
+        ]
+    }
+};
 
-    return config.makeApiClient(kubernetes.CoreV1Api);
-}
+const options = {
+    relativeTo: __dirname
+};
 
 const init = async () => {
 
-    const server = Hapi.server({
-        port: process.env.PORT,
-        host: `${process.env.HOST}`
-    });
-
-    server.route({
-        method: 'GET',
-        path: '/',
-        handler: async () => {
-            let client;
-            let result;
-
-            try {
-                client = buildClient();
-                result = await client.listNamespace();
-                const namespaceNames = result.namespace.body.items.map((item) => {
-                    return item.metadata.name
-                });
-
-                return {
-                    namespaceNames
-                };
-            }
-            catch(err) {
-                console.log('failed to list namespaces', err);
-
-                return err;
-            }
-        }
-    });
-
-    server.route({
-        method: 'GET',
-        path: '/health',
-        handler: async () => {
-            return {
-                status: 'OK'
-            };
-        }
-    });
+    const server = await Glue.compose(manifest, options);
 
     await server.start();
     console.log('Server running on %s', server.info.uri);
