@@ -7,6 +7,7 @@ const manifest = {
     },
     register: {
         plugins: [
+            'hapi-pino',
             {plugin: './routes/root'},
             {plugin: './routes/health'}
         ]

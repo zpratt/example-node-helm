@@ -1,4 +1,4 @@
-FROM node:12.13.1-alpine as builder
+FROM node:12.14.1-alpine as builder
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -10,10 +10,10 @@ USER node
 
 #######################################
 
-FROM node:12.13.1-alpine
+FROM node:12.14.1-alpine
 EXPOSE 8080
 
-RUN mkdir -p /usr/src/app && apk --no-cache update && apk --no-cache upgrade --available && sync
+RUN mkdir -p /usr/src/app && apk --no-cache update && sync
 WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/package.json .

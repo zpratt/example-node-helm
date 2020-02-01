@@ -1,11 +1,4 @@
-const kubernetes = require('@kubernetes/client-node');
-
-function buildClient() {
-    const config = new kubernetes.KubeConfig();
-    config.loadFromCluster();
-
-    return config.makeApiClient(kubernetes.CoreV1Api);
-}
+const {findAllNamespaces} = require('./namespace-service');
 
 module.exports = {
     name: 'root',
@@ -13,26 +6,13 @@ module.exports = {
         server.route({
             method: 'GET',
             path: '/',
-            handler: async () => {
-                let client;
-                let result;
+            handler: async (req) => {
+                req.logger.info(`getting namespaces`);
 
-                try {
-                    client = buildClient();
-                    result = await client.listNamespace();
-                    const namespaceNames = result.namespace.body.items.map((item) => {
-                        return item.metadata.name
-                    });
+                const namespaceNames = findAllNamespaces();
 
-                    return {
-                        namespaceNames
-                    };
-                }
-                catch(err) {
-                    console.log('failed to list namespaces', err);
+                return namespaceNames;
 
-                    return err;
-                }
             }
         });
     }
